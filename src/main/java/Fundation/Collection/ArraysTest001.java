@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ArraysTest001 {
     public static void main(String[] args) {
         String[] strings = {"1", "a", "de"};
-
+        System.out.println("master");
         List list = Arrays.asList(strings);
         list.add(1);
         System.out.println(list.get(2));
