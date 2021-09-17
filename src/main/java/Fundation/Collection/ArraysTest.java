@@ -13,6 +13,7 @@ public class ArraysTest {
     public static void main(String[] args) {
 //        testArrays();
         testCollections();
+        System.out.println("1");
     }
 
     static void testArrays() {
