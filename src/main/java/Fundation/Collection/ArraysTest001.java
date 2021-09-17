@@ -15,6 +15,7 @@ public class ArraysTest001 {
         String[] strings = {"1", "a", "de"};
         System.out.println("master");
         System.out.println("local");
+        System.out.println("local2");
         List list = Arrays.asList(strings);
         list.add(1);
         System.out.println(list.get(2));
