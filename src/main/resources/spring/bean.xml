@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--基于注解生成bean-->
+    <!--告诉spring创建容器时要扫描包-->
+    <context:component-scan base-package="com"></context:component-scan>
+
+    <!--把对象创建交给spring来管理-->
+    <!--spring对bean的管理细节
+       1.创建bean的三种方式
+       2.bean对象作用范围userDaoService
+       3.bean的生命周期
+   -->
+    <!--第一种：id和class,使用默认构造方法，如果没有，则不能创建-->
+    <bean id="userDaoService" class="com.springXml.demon.Service.UserServiceImpl"></bean>
+    <bean id="userDao" class="com.springXml.demon.DAOImpl.UserDaoImpl"></bean>
+
+    <!--第二种和第三种使用场景：第三方JAR包
+       第二种：使用普通工厂中的工厂方法创建，并存入spring容器-->
+    <bean id="simpleFactory" class="com.springXml.demon.Factory.SimpleFactory" init-method="init"
+          destroy-method="destroy" scope="singleton"></bean>
+    <bean id="userDaoCreate" factory-bean="simpleFactory" factory-method="createUserDao"></bean>
+
+    <!--第三种：使用静态工厂中的静态方法创建,并存入spring容器-->
+    <bean id="staticUserDao" class="com.springXml.demon.Factory.StaticSimpleFactory"
+          factory-method="staticCreateUserDao"></bean>
+
+    <!--bean作用范围
+    bean标签的scope属性：
+                        singleTon:单例(默认)、 prototype:多例、request:web应用请求、session:web会话、
+                        global session:集群环境的会话范围(多个集群，公用一个负载均衡，往一个session存密码等登陆信息) -->
+    <!--bean生命周期
+    单例对象
+           出生:当容器创建时出生
+           活着:容器在，对象活着
+           死亡:容器销毁，对象死亡！！！
+    多例对象
+           出生:当对象使用时出生
+           活着:当对象使用中，对象活着
+           死亡:当对象长时间不使用，且没有别的对象引用！！！对象死亡
+    -->
+    <!--spring依赖注入
+        Dependence Injection
+        IOC作用:降低程序间耦合
+        依赖关系管理：交由Srpring容器管理
+        依赖注入：当前类需要引用别的类，由spring提供，我们只需在配置文件中说明依赖并维护
+                能注入的数据有三类：基本数据类型、其他bean类型(在配置文件中或注解配置过的bean)、复杂类型、集合类型
+                注入方式：构造函数、使用set方法注入、使用注解注入
+    -->
+    <!--构造函数注入
+        标签：constructor
+        标签属性：type->数据类型、index->参数位置从0开始、name->参数名称、
+                  value->提供基本数据类型和String; ref：指定其他的bean数据类型，IOC中出现过的bean才行
+        【优势】：必须注入数据时使用 【劣势】：改变了实例化方式
+    -->
+    <bean id="IOCUserServiceImpl" class="com.springXml.demon.Service.IOCUserServiceImpl">
+        <constructor-arg name="name" value="1"></constructor-arg>
+        <constructor-arg name="age" value="12"></constructor-arg>
+        <constructor-arg name="date" ref="now"></constructor-arg>
+    </bean>
+
+    <bean id="now" class="java.util.Date"></bean>
+
+    <!--set方法注入
+        标签:property
+        标签属性： name->set方法名、value->传参(提供基本数据类型和String)、ref->指定其他的bean数据类型，IOC中出现过的bean才行
+        【优势】：创建对象没有m明确限定，可以使用默认构造方法【劣势】：如果有成员必须赋值，则没
+    -->
+    <bean id="IOCSetUserServiceImpl" class="com.springXml.demon.Service.IOCSetUserServiceImpl">
+        <property name="name" value="12"></property>
+        <property name="age" value="31"></property>
+        <property name="date" ref="now"></property>
+    </bean>
+
+    <!--复杂类型注入
+        结构相同，可以互换
+        list:list、set、array
+        map:map、properties
+    -->
+    <bean id="IOCComplexUserServiceImpl" class="com.springXml.demon.Service.IOCComplexUserServiceImpl">
+        <property name="arr">
+            <array>
+                <value>12</value>
+                <value>22</value>
+            </array>
+        </property>
+        <property name="map">
+            <map>
+                <entry key="1" value="2"></entry>
+            </map>
+        </property>
+        <property name="properties">
+            <map>
+                <entry key="1" value="2"></entry>
+            </map>
+        </property>
+    </bean>
+
+    <!--AOP-->
+    <!-- 1.通知的bean交给spring管理==>looger
+         2.使用aop:config表明AOP配置
+         3.使用aop:aspect表明配置切面 id属性==>切面唯一标识 ref属性==>通知类bean的Id
+         4.在aop：aspect标签内使用对应标签来配置通知类型
+             aop:befro/after/
+             pointcut属性
+    -->
+    <!--1.需要增强的类-->
+    <bean id="accountServiceImpl" class="com.SpringAOP.ServiceImpl.AccountServiceImpl"></bean>
+
+    <!--2.提供切面的类-->
+    <bean id="logger" class="com.SpringAOP.Utils.Logger"></bean>
+
+    <!--3.配置切面-->
+    <!--<aop:config>-->
+        <!--&lt;!&ndash;可以指定一个统一的切入点，被通知引用pointcut-ref &ndash;&gt;-->
+        <!--<aop:pointcut id ="pointUnite" expression="execution(* *..*.*())"></aop:pointcut>-->
+
+        <!--<aop:aspect id="logAdvice" ref="logger">-->
+            <!--&lt;!&ndash;配置通知类型（before），建立通知方法和切入点方法的关联&ndash;&gt;-->
+            <!--&lt;!&ndash;<aop:before method="printLog" pointcut="execution(public void com.SpringAOP.ServiceImpl.AccountServiceImpl.saveAccount())"></aop:before>&ndash;&gt;-->
+            <!--<aop:before method="beforePrint"  pointcut="execution(void *..AccountServiceImpl.*(..))"></aop:before>-->
+            <!--<aop:after method="afterPrint" pointcut="execution(void *..AccountServiceImpl.*(..))"></aop:after>-->
+            <!--<aop:after-returning method="afterPrintLog"-->
+                                 <!--pointcut="execution (void *..AccountServiceImpl.*(..))"></aop:after-returning>-->
+            <!--<aop:around method="aroundPrintLog" pointcut="execution (void *..AccountServiceImpl.*(..))"></aop:around>-->
+            <!--<aop:after-throwing method="afterThrowingPrint"-->
+                                <!--pointcut="execution (int *..AccountServiceImpl.*(..))"></aop:after-throwing>-->
+        <!--</aop:aspect>-->
+    <!--</aop:config>-->
+
+    <!--4.使用注解实现AOP-->
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+</beans>
+
+

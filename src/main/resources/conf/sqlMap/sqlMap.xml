@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!--mybatis全局配置文件(环境)-->
+<configuration>
+    <!--数据库properties信息-->
+    <!--1.引入properties文件配置(resources)
+        2.properties内部配置连接信息(property)
+        3.url http://localhost:3306/mybatis(协议，主机，端口，uri)==不常用
+    -->
+    <properties resource="property/jdbc.properties">
+        <!--<property name="driver" value="com.mysql.jdbc.Driver"/>-->
+        <!--<property name="url" value="jdbc:mysql://localhost:3306/cinema0409"/>-->
+        <!--<property name="username" value="root"/>-->
+        <!--<property name="password" value="123456"/>-->
+    </properties>
+
+    <!--使用typeAlias配置类别名-->
+    <!--<typeAliases>-->
+    <!--<typeAlias type="com/mybatis/demon/entity/User" alias="user"></typeAlias>-->
+    <!--&lt;!&ndash;指定包下的类都才用别名，不区分大小写&ndash;&gt;-->
+    <!--<package name="com/mybatis/demon/entity"></package>-->
+    <!--</typeAliases>-->
+
+    <settings>
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+
+
+    <!--1. mysql数据源配置信息-->
+    <environments default="mysql">
+        <!--配置mysql环境-->
+        <environment id="mysql">
+
+            <!--1.1 事务类型-->
+            <transactionManager type="JDBC"></transactionManager>
+
+            <!--1.2 配置数据源(连接池)--><!--数据库连接配置-->
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--2. Mapper
+        a.XML实现：指定映射配置文件：每个DAO独立的配置文件；
+        b.注解实现：class="com.mybatis.demon.Dao.UserDao"
+    -->
+    <mappers>
+        <mapper resource="com/mybatis/demon/Dao/UserDao.xml"/>
+        <!--package标签用于指定Dao接口所在的包，指定后不用再写mapper-->
+        <mapper resource="com/mybatis/demon/Dao/AccountDao.xml"/>
+    </mappers>
+
+
+</configuration>
+

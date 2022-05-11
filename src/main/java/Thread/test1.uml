@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="0.0" y="462.0">java.util.concurrent.AbstractExecutorService</node>
+    <node x="0.0" y="104.0">java.util.concurrent.ExecutorService</node>
+    <node x="163.0" y="0.0">java.util.concurrent.Executor</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="java.util.concurrent.ExecutorService" target="java.util.concurrent.Executor">
+      <point x="0.0" y="-154.0" />
+      <point x="0.0" y="27.0" />
+    </edge>
+    <edge source="java.util.concurrent.AbstractExecutorService" target="java.util.concurrent.ExecutorService">
+      <point x="0.0" y="-130.5" />
+      <point x="0.0" y="154.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.1" x="131.54545454545456" y="150.0" />
+  <SelectedNodes>
+    <node>java.util.concurrent.ExecutorService</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

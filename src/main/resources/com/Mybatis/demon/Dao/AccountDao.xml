@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.Mybatis.demon.Dao.AccountDao">
+
+    <!--开启二级缓存-->
+    <cache></cache>
+
+    <resultMap id="resultMap" type="com.Mybatis.demon.entity.Account">
+        <id property="id" column="id"></id>
+        <result property="uuid" column="uuid"></result>
+        <result property="money" column="money"></result>
+    </resultMap>
+
+    <resultMap id="resultAccountMap" type="com.Mybatis.demon.entity.Account">
+        <id property="id" column="aid"></id>
+        <result property="uid" column="uid"></result>
+        <result property="money" column="money"></result>
+        <association property="user" column="uid" javaType="com.Mybatis.demon.entity.User">
+            <id property="id" column="id"></id>
+            <result property="name" column="name"></result>
+            <result property="address" column="address"></result>
+            <result property="sex" column="sex"></result>
+            <result property="birthday" column="birthday"></result>
+        </association>
+    </resultMap>
+
+    <resultMap id="resultUserAccountInfo" type="com.Mybatis.demon.entity.UserAccountInfo">
+        <id property="id" column="id"></id>
+        <result property="name" column="name"></result>
+        <result property="address" column="address"></result>
+        <result property="sex" column="sex"></result>
+        <result property="birthday" column="birthday"></result>
+        <collection property="accountList" ofType="com.Mybatis.demon.entity.Account">
+            <id property="id" column="aid"></id>
+            <result property="uid" column="uid"></result>
+            <result property="money" column="money"></result>
+        </collection>
+    </resultMap>
+
+
+    <select id="findAll" resultMap="resultAccountMap">
+        select b.*,a.uid,a.money,a.id aid
+        from account a
+                 inner join user b on a.uid = b.id;
+    </select>
+
+    <select id="findAccountUserInfo" resultType="com.Mybatis.demon.entity.AccountUser">
+        select a.*,b.name userName,b.address
+        from account a
+                 inner join user b on a.uid = b.id;
+    </select>
+
+    <select id="findUserAccountInfo" resultMap="resultUserAccountInfo">
+        select b.*,a.uid,a.money,a.id aid
+        from user b
+                 left join account a on a.uid = b.id;
+    </select>
+
+</mapper>

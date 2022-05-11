@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--1.Mapper配置文件位置要和映射的Dao位置一致
+    2.namespace必须是映射的Dao位置
+    3.select标签的id必须要和Dao接口方法一致
+    4.可以通过改查询字段别名和实体类属性一致来解决不匹配问题
+    5.
+-->
+
+<mapper namespace="com.Mybatis.demon.Dao.UserDao">
+    <!--(1)数据库查询结果和实体匹配通过对应关系解决
+        (2)resultType="userMap"-->
+
+    <resultMap id="userMap" type="com.Mybatis.demon.entity.User">
+        <!--主键-->
+        <id property="id" column="id"></id>
+        <!--非主键-->
+        <result property="name" column="name"></result>
+        <result property="address" column="address"></result>
+        <result property="birthday" column="birthday"></result>
+        <result property="sex" column="sex"></result>
+    </resultMap>
+
+    <select id="findAll" resultMap="userMap">
+        select *
+        from user;
+    </select>
+
+    <insert id="saveUser" parameterType="com.Mybatis.demon.entity.User">
+        insert into user(name, birthday, address, sex)
+        values (#{name}, #{birthday}, #{address}, #{sex})
+    </insert>
+
+    <update id="update" parameterType="com.Mybatis.demon.entity.User">
+        update user
+        set name=#{name}
+        where address = #{address}
+    </update>
+
+    <delete id="delete" parameterType="Integer">
+        delete  from user where id =  #{id}
+    </delete>
+
+    <select id="findUserById" parameterType="Integer" resultType="com.Mybatis.demon.entity.User">
+        select * from user where id=#{id}
+    </select>
+
+    <select id="findUserByName" parameterType="String" resultType="com.Mybatis.demon.entity.User">
+        select * from user where name like  #{name}
+
+    </select>
+
+    <select id="findCountById" resultType="Integer">
+        select count(1)from user where id=#{id}
+    </select>
+
+    <insert id="selectLastId" parameterType="com.Mybatis.demon.entity.User">
+      <selectKey keyProperty="id"  resultType="Integer" order="AFTER" >
+          select last_insert_id()
+      </selectKey>
+      insert into user (name,birthday,address,sex)
+      values (#{name},#{birthday},#{address},#{sex})
+    </insert>
+
+    <select id="findByCondition" resultType="com.Mybatis.demon.entity.User" parameterType="String">
+        select * from user where 1=1
+       <!-- 可以添加where标签套if省略1=1
+       <where> </where>-->
+        and
+        <!--test标签传参采用的是get方式，所以如果不是实体，则需要在Dao加注解@parm（mybatis代码实现？？？）-->
+        <if test="name !='' and name != null">
+            name=#{name}
+        </if>
+    </select>
+
+    <select id="findByIn" resultType="com.Mybatis.demon.entity.User" parameterType="List">
+        select *from user where 1=1
+        <foreach collection="list" item="user" open="and name in (" close=")" separator="," >
+          #{user}
+        </foreach>
+    </select>
+
+    <select id="findUserByUserVo" parameterType="com.Mybatis.demon.entity.UserVo" resultType="com.Mybatis.demon.entity.User">
+        select *from user
+        where name like #{user.name}
+    </select>
+
+
+</mapper>
